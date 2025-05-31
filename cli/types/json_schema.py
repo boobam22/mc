@@ -63,3 +63,32 @@ class AssetMeta(t.TypedDict):
         size: int
 
     objects: dict[str, Asset]
+
+
+class FabricMeta(t.TypedDict):
+    class Maven(t.TypedDict):
+        maven: str
+        version: str
+
+    intermediary: Maven
+    loader: Maven
+
+    class LauncherMeta(t.TypedDict):
+        class Libraries(t.TypedDict):
+            class Item(t.TypedDict):
+                name: str
+                sha1: str
+                url: str
+                size: int
+
+            common: list[Item]
+
+        libraries: Libraries
+
+        class MainClass(t.TypedDict):
+            client: str
+            server: str
+
+        mainClass: MainClass
+
+    launcherMeta: LauncherMeta

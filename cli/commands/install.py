@@ -5,6 +5,7 @@ from parser import subparser
 import typing as t
 
 from client import download, download_all
+from fabric import install_fabric
 
 if t.TYPE_CHECKING:
     from dataclasses import dataclass
@@ -132,6 +133,8 @@ async def main(args: "Args", version: "Versions.Item"):
 
     main_class = local_dir / "MAINCLASS"
     main_class.write_text(meta["mainClass"])
+
+    await install_fabric(local_dir, vid)
 
 
 def install(args: "Args"):
