@@ -5,12 +5,12 @@ import typing as t
 from client import download
 
 if t.TYPE_CHECKING:
-    from types.args import BaseArgs
+    from types.args import BaseArgsDeprecated
 
 VERSION_MANIFEST_URL = "https://piston-meta.mojang.com/mc/game/version_manifest.json"
 
 
-def update(args: "BaseArgs"):
+def update(args: "BaseArgsDeprecated"):
     if args.VERSION_MANIFEST.exists():
         args.VERSION_MANIFEST.unlink()
 

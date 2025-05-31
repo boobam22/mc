@@ -11,11 +11,11 @@ import commands.list
 import commands.start
 
 if t.TYPE_CHECKING:
-    from types.args import BaseArgs
+    from types.args import BaseArgsDeprecated
 
 
 def main():
-    args = t.cast("BaseArgs", parser.parse_args())
+    args = t.cast("BaseArgsDeprecated", parser.parse_args())
     args.callback(args)
 
 

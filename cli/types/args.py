@@ -4,7 +4,7 @@ import typing as t
 
 
 @dataclass
-class BaseArgs:
+class BaseArgsDeprecated:
     ROOT_DIR: Path
     VERSION_DIR: Path
     ASSET_IDX_DIR: Path
@@ -13,4 +13,4 @@ class BaseArgs:
 
     VERSION_MANIFEST: Path
 
-    callback: t.Callable[["BaseArgs"], None]
+    callback: t.Callable[["BaseArgsDeprecated"], None]

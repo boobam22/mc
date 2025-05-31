@@ -5,10 +5,10 @@ import typing as t
 if t.TYPE_CHECKING:
     from dataclasses import dataclass
 
-    from types.args import BaseArgs
+    from types.args import BaseArgsDeprecated
 
     @dataclass
-    class Args(BaseArgs):
+    class Args(BaseArgsDeprecated):
         args: list[str]
 
 

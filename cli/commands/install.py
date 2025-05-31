@@ -12,11 +12,11 @@ if t.TYPE_CHECKING:
     from pathlib import Path
 
     from client import URI
-    from types.args import BaseArgs
+    from types.args import BaseArgsDeprecated
     from types.json_schema import Versions, VersionMeta, AssetMeta
 
     @dataclass
-    class Args(BaseArgs):
+    class Args(BaseArgsDeprecated):
         version: str | None
 
 
