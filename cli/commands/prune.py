@@ -2,11 +2,11 @@ from parser import subparser
 import typing as t
 
 if t.TYPE_CHECKING:
-    from types.args import BaseArgsDeprecated
+    from types.path import Paths
 
 
-def prune(args: "BaseArgsDeprecated"):
-    for dir in [args.LIB_OBJ_DIR, args.ASSET_OBJ_DIR]:
+def prune(ctx: "Paths"):
+    for dir in [ctx.lib_obj_dir, ctx.asset_obj_dir]:
         for obj in list(dir.glob("**/*")):
             if obj.is_file() and obj.stat().st_nlink == 1:
                 obj.unlink()
