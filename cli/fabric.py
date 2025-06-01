@@ -1,7 +1,7 @@
 import shutil
 import typing as t
 
-from client import client, download_all
+from client import client, download, download_all
 
 if t.TYPE_CHECKING:
     from client import URI
@@ -30,7 +30,9 @@ async def install_fabric(ctx: "VersionPaths"):
     data: "FabricMeta" = res.json()[0]
 
     url = f"{META_HOST}/v2/versions/loader/{version}/{data['loader']['version']}/profile/json"
-    items: list["URI"] = [(url, ctx.fabric_metadata, None)]
+    await download(url, ctx.fabric_metadata)
+
+    items: list["URI"] = []
 
     for key in ["loader", "intermediary"]:
         key = t.cast(t.Literal["loader", "intermediary"], key)
