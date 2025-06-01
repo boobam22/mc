@@ -6,7 +6,9 @@ import typing as t
 if t.TYPE_CHECKING:
     from dataclasses import dataclass
 
-    from types.args import BaseArgs
+    from type.args import BaseArgs
+    from type.path import Paths
+    from type.json_schema import Versions
 
     @dataclass
     class Args(BaseArgs):
@@ -15,11 +17,10 @@ if t.TYPE_CHECKING:
         parttern: str
 
 
-def list(args: "Args"):
-    dir = args.VERSION_DIR
-    installed = [str(item.relative_to(dir)) for item in dir.glob("*")]
+def list(args: "Args", ctx: "Paths"):
+    installed = [item.name for item in ctx.versions_dir.glob("*")]
 
-    versions = json.loads(args.VERSION_MANIFEST.read_text())
+    versions: "Versions" = json.loads(ctx.version_manifest.read_text())
 
     for item in versions["versions"]:
         id = item["id"]
@@ -39,6 +40,7 @@ def list(args: "Args"):
 
 
 p = subparser.add_parser("list", help="list minecraft")
+p.add_argument("--root-path")
 p.add_argument("--installed", action="store_true", default=False)
 p.add_argument("--type", "-t", choices=["release", "snapshot", "old_alpha", "old_beta"])
 p.add_argument("parttern", nargs="?", default="*")

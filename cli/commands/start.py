@@ -1,56 +1,61 @@
+import json
 import subprocess
 from parser import subparser
 import typing as t
 
 if t.TYPE_CHECKING:
-    from dataclasses import dataclass
-
-    from types.args import BaseArgs
-
-    @dataclass
-    class Args(BaseArgs):
-        args: list[str]
+    from type.args import BaseArgs
+    from type.path import Paths
 
 
-start_sh = """
-#!/bin/sh
+def start(args: "BaseArgs", ctx: "Paths"):
+    if (version := args.version) is None:
+        version = ctx.last_version.read_text().strip()
 
-ROOT_DIR="${HOME}/.minecraft"
+    ctx.last_version.write_text(version)
+    ctx = ctx.set_version(version)
 
-if [ -n "$2" ]; then
-  exit 1
-fi
+    cwd = ctx.version_dir
 
-if [ -n "$1" ]; then
-  VERSION=$1
-else
-  VERSION=$(cat "${ROOT_DIR}/VERSION")
-fi
+    libs = [str(item.relative_to(cwd)) for item in ctx.lib_dir.glob("**/*.jar")]
 
-WORK_DIR="${ROOT_DIR}/versions/${VERSION}"
-cd ${WORK_DIR} || exit 1
-echo ${VERSION} > "${ROOT_DIR}/VERSION"
+    if ctx.fabric_metadata.exists():
+        metadata = ctx.fabric_metadata
+    else:
+        metadata = ctx.metadata
 
-java \
-    -Xmx4G \
-    -Djava.library.path=natives \
-    -cp "$(find libraries -name '*.jar' | paste -sd:):client.jar" \
-    $(cat MAINCLASS) \
-    --username nia11720 \
-    --version ${VERSION} \
-    --gameDir ${WORK_DIR} \
-    --assetsDir ${ROOT_DIR}/assets \
-    --assetIndex ${VERSION} \
-    --uuid 3b6de038-3d66-48cd-8816-cb3579dd2c53 \
-    --accessToken 0 \
-    > /dev/null  2>&1 &
-"""
+    main_class: str = json.loads(metadata.read_text())["mainClass"]
 
-
-def start(args: "Args"):
-    subprocess.run(["sh", "-c", start_sh, "script-name"] + args.args)
+    subprocess.Popen(
+        [
+            "java",
+            "-Xmx4G",
+            f"-Djava.library.path={ctx.native_dir.relative_to(cwd)}",
+            "-cp",
+            f"{':'.join(libs)}:{ctx.client.relative_to(cwd)}",
+            main_class,
+            "--version",
+            version,
+            "--gameDir",
+            ".",
+            "--assetsDir",
+            str(ctx.asset_idx_dir.parent),
+            "--assetIndex",
+            version,
+            "--username",
+            "nia11720",
+            "--uuid",
+            "3b6de038-3d66-48cd-8816-cb3579dd2c53",
+            "--accessToken",
+            "0",
+        ],
+        cwd=cwd,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
 
 p = subparser.add_parser("start", help="start minecraft")
-p.add_argument("args", nargs="*")
+p.add_argument("--root-path")
+p.add_argument("version", nargs="?")
 p.set_defaults(callback=start)
