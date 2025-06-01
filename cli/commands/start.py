@@ -3,13 +3,8 @@ from parser import subparser
 import typing as t
 
 if t.TYPE_CHECKING:
-    from dataclasses import dataclass
-
-    from types.args import BaseArgsDeprecated
-
-    @dataclass
-    class Args(BaseArgsDeprecated):
-        args: list[str]
+    from types.args import BaseArgs
+    from types.path import VersionPaths
 
 
 start_sh = """
@@ -47,10 +42,10 @@ java \
 """
 
 
-def start(args: "Args"):
-    subprocess.run(["sh", "-c", start_sh, "script-name"] + args.args)
+def start(args: "BaseArgs", ctx: "VersionPaths"):
+    pass
 
 
 p = subparser.add_parser("start", help="start minecraft")
-p.add_argument("args", nargs="*")
+p.add_argument("version", nargs="?")
 p.set_defaults(callback=start)
