@@ -12,8 +12,8 @@ if t.TYPE_CHECKING:
 
     from client import URI
     from type.args import BaseArgs
-    from type.path import Paths, VersionPaths
-    from type.json_schema import Versions, VersionMeta, AssetMeta
+    from type.path import VersionPaths
+    from type.json_schema import VersionMeta, AssetMeta
 
 
 ASSET_HOST = "https://resources.download.minecraft.net"
@@ -88,8 +88,8 @@ def link_asset(meta: "AssetMeta", ctx: "VersionPaths"):
         hardlink(src, dst)
 
 
-async def main(url: str, ctx: "VersionPaths"):
-    await download(url, ctx.metadata)
+async def main(ctx: "VersionPaths"):
+    await download(ctx.version["url"], ctx.metadata)
     meta: "VersionMeta" = json.loads(ctx.metadata.read_text())
 
     asset = meta["assetIndex"]
@@ -109,21 +109,8 @@ async def main(url: str, ctx: "VersionPaths"):
     await install_fabric(ctx)
 
 
-def install(args: "BaseArgs", ctx: "Paths"):
-    assert ctx.version_manifest.exists()
-    versions: "Versions" = json.loads(ctx.version_manifest.read_text())
-
-    if (version := args.version) is None:
-        version = versions["latest"]["release"]
-        ctx.set_version(version)
-
-    for item in versions["versions"]:
-        if item["id"] == version:
-            ctx = t.cast("VersionPaths", ctx)
-            asyncio.run(main(item["url"], ctx))
-            break
-    else:
-        raise
+def install(args: "BaseArgs", ctx: "VersionPaths"):
+    asyncio.run(main(ctx))
 
 
 p = subparser.add_parser("install", help="install minecraft")

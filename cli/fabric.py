@@ -23,7 +23,7 @@ async def install_fabric(ctx: "VersionPaths"):
     if ctx.fabric_metadata.exists():
         return
 
-    version = ctx.version_dir.name
+    version = ctx.version["id"]
 
     url = f"{META_HOST}/v2/versions/loader/{version}"
     res = await client.get(url)
