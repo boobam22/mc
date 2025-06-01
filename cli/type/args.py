@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import typing as t
 
 if t.TYPE_CHECKING:
-    from types.path import Paths
+    from type.path import Paths
 
 
 @dataclass

@@ -9,10 +9,10 @@ import commands.remove
 import commands.prune
 import commands.list
 import commands.start
-from types.path import Paths, VersionPaths
+from type.path import Paths, VersionPaths
 
 if t.TYPE_CHECKING:
-    from types.args import BaseArgs
+    from type.args import BaseArgs
 
 
 def main():

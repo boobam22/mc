@@ -2,8 +2,8 @@ from parser import subparser
 import typing as t
 
 if t.TYPE_CHECKING:
-    from types.args import BaseArgs
-    from types.path import Paths
+    from type.args import BaseArgs
+    from type.path import Paths
 
 
 def prune(args: "BaseArgs", ctx: "Paths"):

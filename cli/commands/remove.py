@@ -3,8 +3,8 @@ from parser import subparser
 import typing as t
 
 if t.TYPE_CHECKING:
-    from types.args import BaseArgs
-    from types.path import VersionPaths
+    from type.args import BaseArgs
+    from type.path import VersionPaths
 
 
 def remove(args: "BaseArgs", ctx: "VersionPaths"):

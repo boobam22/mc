@@ -11,9 +11,9 @@ if t.TYPE_CHECKING:
     from pathlib import Path
 
     from client import URI
-    from types.args import BaseArgs
-    from types.path import Paths, VersionPaths
-    from types.json_schema import Versions, VersionMeta, AssetMeta
+    from type.args import BaseArgs
+    from type.path import Paths, VersionPaths
+    from type.json_schema import Versions, VersionMeta, AssetMeta
 
 
 ASSET_HOST = "https://resources.download.minecraft.net"

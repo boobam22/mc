@@ -5,8 +5,8 @@ from client import client, download_all
 
 if t.TYPE_CHECKING:
     from client import URI
-    from types.path import VersionPaths
-    from types.json_schema import FabricMeta
+    from type.path import VersionPaths
+    from type.json_schema import FabricMeta
 
 META_HOST = "https://meta.fabricmc.net"
 MAVEN_HOST = "https://maven.fabricmc.net"
