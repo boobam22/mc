@@ -5,7 +5,7 @@ from parser import subparser
 import typing as t
 
 from client import download, download_all
-from fabric import install_fabric
+from game.fabric import install_fabric
 from game.mod import download_mods
 
 if t.TYPE_CHECKING:
