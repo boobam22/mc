@@ -4,12 +4,14 @@ import typing as t
 
 if t.TYPE_CHECKING:
     from type.args import BaseArgs
-    from type.path import VersionPaths
+    from type.path import Paths
 
 
-def remove(args: "BaseArgs", ctx: "VersionPaths"):
+def remove(args: "BaseArgs", ctx: "Paths"):
+    version: t.Any = {"id": args.version}
+    ctx = ctx.set_version(version)
+
     assert ctx.version_dir.exists()
-
     shutil.rmtree(ctx.version_dir)
     ctx.asset_idx.unlink()
 

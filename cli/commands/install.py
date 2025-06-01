@@ -12,8 +12,8 @@ if t.TYPE_CHECKING:
 
     from client import URI
     from type.args import BaseArgs
-    from type.path import VersionPaths
-    from type.json_schema import VersionMeta, AssetMeta
+    from type.path import Paths, VersionPaths
+    from type.json_schema import Versions, VersionMeta, AssetMeta
 
 
 ASSET_HOST = "https://resources.download.minecraft.net"
@@ -109,8 +109,19 @@ async def main(ctx: "VersionPaths"):
     await install_fabric(ctx)
 
 
-def install(args: "BaseArgs", ctx: "VersionPaths"):
-    asyncio.run(main(ctx))
+def install(args: "BaseArgs", ctx: "Paths"):
+    assert ctx.version_manifest.exists()
+    versions: "Versions" = json.loads(ctx.version_manifest.read_text())
+
+    if (version := args.version) is None:
+        version = versions["latest"]["release"]
+
+    for item in versions["versions"]:
+        if item["id"] == version:
+            asyncio.run(main(ctx.set_version(item)))
+            break
+    else:
+        raise
 
 
 p = subparser.add_parser("install", help="install minecraft")
