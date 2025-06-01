@@ -5,16 +5,16 @@ import typing as t
 from client import download
 
 if t.TYPE_CHECKING:
-    from types.args import BaseArgsDeprecated
+    from types.path import Paths
 
 VERSION_MANIFEST_URL = "https://piston-meta.mojang.com/mc/game/version_manifest.json"
 
 
-def update(args: "BaseArgsDeprecated"):
-    if args.VERSION_MANIFEST.exists():
-        args.VERSION_MANIFEST.unlink()
+def update(ctx: "Paths"):
+    if ctx.version_manifest.exists():
+        ctx.version_manifest.unlink()
 
-    asyncio.run(download(VERSION_MANIFEST_URL, args.VERSION_MANIFEST))
+    asyncio.run(download(VERSION_MANIFEST_URL, ctx.version_manifest))
 
 
 p = subparser.add_parser("update", help="update version manifest")
