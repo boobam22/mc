@@ -32,12 +32,16 @@ class Paths:
 
         object.__setattr__(self, "versions_dir", root_dir / "versions")
 
+    def set_version(self, version: str):
+        return VersionPaths(version, str(self.root_dir))
+
 
 @dataclass(frozen=True)
 class VersionPaths(Paths):
     version_dir: Path
 
     asset_idx: Path
+    client: Path
 
     asset_dir: Path
     lib_dir: Path
@@ -54,6 +58,7 @@ class VersionPaths(Paths):
         object.__setattr__(self, "version_dir", version_dir)
 
         object.__setattr__(self, "asset_idx", self.asset_idx_dir / f"{version}.json")
+        object.__setattr__(self, "client", self.version_dir / "client.json")
 
         object.__setattr__(self, "asset_dir", version_dir / "assets")
         object.__setattr__(self, "lib_dir", version_dir / "libraries")

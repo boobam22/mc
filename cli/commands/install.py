@@ -8,54 +8,47 @@ from client import download, download_all
 from fabric import install_fabric
 
 if t.TYPE_CHECKING:
-    from dataclasses import dataclass
     from pathlib import Path
 
     from client import URI
-    from types.args import BaseArgsDeprecated
+    from types.args import BaseArgs
+    from types.path import Paths, VersionPaths
     from types.json_schema import Versions, VersionMeta, AssetMeta
-
-    @dataclass
-    class Args(BaseArgsDeprecated):
-        version: str | None
 
 
 ASSET_HOST = "https://resources.download.minecraft.net"
 
 
-def parse_game(dir: "Path", meta: "VersionMeta"):
-    game = meta["downloads"]
-
+def parse_game(meta: "VersionMeta", ctx: "VersionPaths"):
     ret: list["URI"] = []
-    dst = dir / f"client.jar"
-    ret.append((game["client"]["url"], dst, game["client"]["size"]))
+
+    client = meta["downloads"]["client"]
+    ret.append((client["url"], ctx.client, client["size"]))
 
     return ret
 
 
-def parse_library(dir: "Path", meta: "VersionMeta"):
-    items = meta["libraries"]
-
+def parse_library(meta: "VersionMeta", ctx: "VersionPaths"):
     ret: list["URI"] = []
-    for item in items:
+
+    for item in meta["libraries"]:
         af = item["downloads"]["artifact"]
         hash = af["sha1"]
 
-        dst = dir / f"{hash[:2]}/{hash}"
+        dst = ctx.lib_obj_dir / f"{hash[:2]}/{hash}"
         ret.append((af["url"], dst, af["size"]))
 
     return ret
 
 
-def parse_asset(dir: "Path", meta: "AssetMeta"):
-    items = meta["objects"]
-
+def parse_asset(meta: "AssetMeta", ctx: "VersionPaths"):
     ret: list["URI"] = []
-    for item in items.values():
+
+    for item in meta["objects"].values():
         hash = item["hash"]
 
         url = f"{ASSET_HOST}/{hash[:2]}/{hash}"
-        dst = dir / f"{hash[:2]}/{hash}"
+        dst = ctx.asset_obj_dir / f"{hash[:2]}/{hash}"
         ret.append((url, dst, item["size"]))
 
     return ret
@@ -66,90 +59,71 @@ def hardlink(src: "Path", dst: "Path"):
     dst.hardlink_to(src)
 
 
-def link_library(obj_dir: "Path", local_dir: "Path", meta: "VersionMeta"):
-    items = meta["libraries"]
-
-    lib_local_dir = local_dir / "libraries"
-    native_dir = local_dir / "natives"
-
-    if lib_local_dir.exists():
+def link_library(meta: "VersionMeta", ctx: "VersionPaths"):
+    if ctx.native_dir.exists():
         return
-    lib_local_dir.mkdir()
 
-    for item in items:
+    for item in meta["libraries"]:
         af = item["downloads"]["artifact"]
         hash = af["sha1"]
         path = af["path"]
 
-        src = obj_dir / f"{hash[:2]}/{hash}"
+        src = ctx.lib_obj_dir / f"{hash[:2]}/{hash}"
         if "-natives-" in path:
             with zipfile.ZipFile(src) as jar:
-                jar.extractall(native_dir)
+                jar.extractall(ctx.native_dir)
         else:
-            hardlink(src, lib_local_dir / path)
+            hardlink(src, ctx.lib_dir / path)
 
 
-def link_asset(obj_dir: "Path", local_dir: "Path", meta: "AssetMeta"):
-    items = meta["objects"]
-
-    asset_local_dir = local_dir / "assets"
-
-    if asset_local_dir.exists():
+def link_asset(meta: "AssetMeta", ctx: "VersionPaths"):
+    if ctx.asset_dir.exists():
         return
-    asset_local_dir.mkdir()
 
-    for path, item in items.items():
+    for path, item in meta["objects"].items():
         hash = item["hash"]
 
-        src = obj_dir / f"{hash[:2]}/{hash}"
-        dst = asset_local_dir / path
+        src = ctx.asset_obj_dir / f"{hash[:2]}/{hash}"
+        dst = ctx.asset_dir / path
         hardlink(src, dst)
 
 
-async def main(args: "Args", version: "Versions.Item"):
-    vid = version["id"]
-    url = version["url"]
-    local_dir = args.VERSION_DIR / vid
-    dst = local_dir / "metadata.json"
-
-    await download(url, dst)
-    meta: "VersionMeta" = json.loads(dst.read_text())
+async def main(url: str, ctx: "VersionPaths"):
+    await download(url, ctx.metadata)
+    meta: "VersionMeta" = json.loads(ctx.metadata.read_text())
 
     asset = meta["assetIndex"]
-    dst = args.ASSET_IDX_DIR / f"{vid}.json"
-
-    await download(asset["url"], dst, asset["size"])
-    asset_meta: "AssetMeta" = json.loads(dst.read_text())
+    await download(asset["url"], ctx.asset_idx, asset["size"])
+    asset_meta: "AssetMeta" = json.loads(ctx.asset_idx.read_text())
 
     items: list["URI"] = []
-    items += parse_game(local_dir, meta)
-    items += parse_library(args.LIB_OBJ_DIR, meta)
-    items += parse_asset(args.ASSET_OBJ_DIR, asset_meta)
+    items += parse_game(meta, ctx)
+    items += parse_library(meta, ctx)
+    items += parse_asset(asset_meta, ctx)
 
     await download_all(items)
 
-    link_library(args.LIB_OBJ_DIR, local_dir, meta)
-    link_asset(args.ASSET_OBJ_DIR, local_dir, asset_meta)
+    link_library(meta, ctx)
+    link_asset(asset_meta, ctx)
 
-    main_class = local_dir / "MAINCLASS"
-    main_class.write_text(meta["mainClass"])
-
-    await install_fabric(local_dir, vid)
+    await install_fabric(ctx)
 
 
-def install(args: "Args"):
-    assert args.VERSION_MANIFEST.exists()
-    versions: "Versions" = json.loads(args.VERSION_MANIFEST.read_text())
+def install(args: "BaseArgs", ctx: "Paths"):
+    assert ctx.version_manifest.exists()
+    versions: "Versions" = json.loads(ctx.version_manifest.read_text())
 
-    if (vid := args.version) is None:
-        vid = versions["latest"]["release"]
+    if (version := args.version) is None:
+        version = versions["latest"]["release"]
+        ctx.set_version(version)
 
     for item in versions["versions"]:
-        if item["id"] == vid:
-            asyncio.run(main(args, item))
+        if item["id"] == version:
+            ctx = t.cast("VersionPaths", ctx)
+            asyncio.run(main(item["url"], ctx))
             break
     else:
-        raise ValueError("invalid version, try to update version_manifest")
+        raise
 
 
 p = subparser.add_parser("install", help="install minecraft")
