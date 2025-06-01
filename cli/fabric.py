@@ -47,6 +47,6 @@ async def install_fabric(ctx: "VersionPaths"):
 
     for _, jar, _ in items:
         version = jar.parent.name
-        for item in jar.parent.parent.iterdir():
+        for item in jar.parent.parent.glob("*"):
             if item.name != version:
                 shutil.rmtree(item)

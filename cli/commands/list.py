@@ -8,6 +8,7 @@ if t.TYPE_CHECKING:
 
     from type.args import BaseArgs
     from type.path import Paths
+    from type.json_schema import Versions
 
     @dataclass
     class Args(BaseArgs):
@@ -17,9 +18,9 @@ if t.TYPE_CHECKING:
 
 
 def list(args: "Args", ctx: "Paths"):
-    installed = [item.name for item in ctx.versions_dir.iterdir()]
+    installed = [item.name for item in ctx.versions_dir.glob("*")]
 
-    versions = json.loads(ctx.version_manifest.read_text())
+    versions: "Versions" = json.loads(ctx.version_manifest.read_text())
 
     for item in versions["versions"]:
         id = item["id"]
