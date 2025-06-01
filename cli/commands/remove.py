@@ -15,5 +15,6 @@ def remove(args: "BaseArgs", ctx: "VersionPaths"):
 
 
 p = subparser.add_parser("remove", help="remove minecraft")
+p.add_argument("--root-path")
 p.add_argument("version")
 p.set_defaults(callback=remove)

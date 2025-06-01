@@ -47,5 +47,6 @@ def start(args: "BaseArgs", ctx: "VersionPaths"):
 
 
 p = subparser.add_parser("start", help="start minecraft")
+p.add_argument("--root-path")
 p.add_argument("version", nargs="?")
 p.set_defaults(callback=start)

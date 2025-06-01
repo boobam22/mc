@@ -14,4 +14,5 @@ def prune(args: "BaseArgs", ctx: "Paths"):
 
 
 p = subparser.add_parser("prune", help="prune objects")
+p.add_argument("--root-path")
 p.set_defaults(callback=prune)

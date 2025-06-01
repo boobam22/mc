@@ -19,4 +19,5 @@ def update(args: "BaseArgs", ctx: "Paths"):
 
 
 p = subparser.add_parser("update", help="update version manifest")
+p.add_argument("--root-path")
 p.set_defaults(callback=update)

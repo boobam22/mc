@@ -39,6 +39,7 @@ def list(args: "Args", ctx: "Paths"):
 
 
 p = subparser.add_parser("list", help="list minecraft")
+p.add_argument("--root-path")
 p.add_argument("--installed", action="store_true", default=False)
 p.add_argument("--type", "-t", choices=["release", "snapshot", "old_alpha", "old_beta"])
 p.add_argument("parttern", nargs="?", default="*")
