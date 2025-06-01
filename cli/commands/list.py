@@ -6,20 +6,20 @@ import typing as t
 if t.TYPE_CHECKING:
     from dataclasses import dataclass
 
-    from types.args import BaseArgsDeprecated
+    from types.args import BaseArgs
+    from types.path import Paths
 
     @dataclass
-    class Args(BaseArgsDeprecated):
+    class Args(BaseArgs):
         installed: bool
         type: t.Literal["release", "snapshot", "old_alpha", "old_beta"] | None
         parttern: str
 
 
-def list(args: "Args"):
-    dir = args.VERSION_DIR
-    installed = [str(item.relative_to(dir)) for item in dir.glob("*")]
+def list(args: "Args", ctx: "Paths"):
+    installed = [item.name for item in ctx.versions_dir.iterdir()]
 
-    versions = json.loads(args.VERSION_MANIFEST.read_text())
+    versions = json.loads(ctx.version_manifest.read_text())
 
     for item in versions["versions"]:
         id = item["id"]
