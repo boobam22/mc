@@ -1,6 +1,5 @@
 # pyright: reportUnusedImport=false
 
-import pathlib
 from parser import parser
 import typing as t
 
