@@ -65,7 +65,9 @@ class VersionPaths(Paths):
 
         object.__setattr__(self, "version_dir", version_dir)
 
-        object.__setattr__(self, "asset_idx", self.asset_idx_dir / f"{version}.json")
+        object.__setattr__(
+            self, "asset_idx", self.asset_idx_dir / f"{version['id']}.json"
+        )
         object.__setattr__(self, "client", self.version_dir / "client.json")
 
         object.__setattr__(self, "asset_dir", version_dir / "assets")

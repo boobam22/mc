@@ -31,7 +31,7 @@ def main():
 
         for item in versions["versions"]:
             if item["id"] == version:
-                ctx.set_version(item)
+                ctx = ctx.set_version(item)
                 break
         else:
             raise
