@@ -92,3 +92,19 @@ class FabricMeta(t.TypedDict):
         mainClass: MainClass
 
     launcherMeta: LauncherMeta
+
+
+class ModrinthItem(t.TypedDict):
+    id: str
+    name: str
+    game_versions: list[str]
+    loaders: list[str]
+    version_number: str
+    version_type: str
+
+    class File(t.TypedDict):
+        filename: str
+        size: int
+        url: str
+
+    files: list[File]

@@ -49,6 +49,8 @@ class VersionPaths(Paths):
     lib_dir: Path
     native_dir: Path
 
+    mod_dir: Path
+
     metadata: Path
     fabric_metadata: Path
 
@@ -65,6 +67,8 @@ class VersionPaths(Paths):
         object.__setattr__(self, "asset_dir", version_dir / "assets")
         object.__setattr__(self, "lib_dir", version_dir / "libraries")
         object.__setattr__(self, "native_dir", version_dir / "natives")
+
+        object.__setattr__(self, "mod_dir", version_dir / "mods")
 
         object.__setattr__(self, "metadata", version_dir / "metadata.json")
         object.__setattr__(

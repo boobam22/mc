@@ -6,6 +6,7 @@ import typing as t
 
 from client import download, download_all
 from fabric import install_fabric
+from game.mod import download_mods
 
 if t.TYPE_CHECKING:
     from pathlib import Path
@@ -107,6 +108,7 @@ async def main(url: str, ctx: "VersionPaths"):
     link_asset(asset_meta, ctx)
 
     await install_fabric(ctx)
+    await download_mods(ctx)
 
 
 def install(args: "BaseArgs", ctx: "Paths"):
