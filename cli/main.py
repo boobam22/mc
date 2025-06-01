@@ -24,7 +24,7 @@ def main():
     else:
         ctx = VersionPaths(args.version, args.root_path)
 
-    args.callback(ctx)
+    args.callback(args, ctx)
 
 
 if __name__ == "__main__":

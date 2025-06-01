@@ -5,12 +5,13 @@ import typing as t
 from client import download
 
 if t.TYPE_CHECKING:
+    from types.args import BaseArgs
     from types.path import Paths
 
 VERSION_MANIFEST_URL = "https://piston-meta.mojang.com/mc/game/version_manifest.json"
 
 
-def update(ctx: "Paths"):
+def update(args: "BaseArgs", ctx: "Paths"):
     if ctx.version_manifest.exists():
         ctx.version_manifest.unlink()
 

@@ -24,4 +24,4 @@ class BaseArgs:
     root_path: str | None
     version: str | None
 
-    callback: t.Callable[["Paths"], None]
+    callback: t.Callable[["BaseArgs", "Paths"], None]
