@@ -3,21 +3,15 @@ from parser import subparser
 import typing as t
 
 if t.TYPE_CHECKING:
-    from dataclasses import dataclass
-
-    from types.args import BaseArgsDeprecated
-
-    @dataclass
-    class Args(BaseArgsDeprecated):
-        version: str
+    from types.args import BaseArgs
+    from types.path import VersionPaths
 
 
-def remove(args: "Args"):
-    local_dir = args.VERSION_DIR / args.version
-    assert local_dir.exists()
+def remove(args: "BaseArgs", ctx: "VersionPaths"):
+    assert ctx.version_dir.exists()
 
-    shutil.rmtree(local_dir)
-    args.ASSET_IDX_DIR.joinpath(f"{args.version}.json").unlink()
+    shutil.rmtree(ctx.version_dir)
+    ctx.asset_idx.unlink()
 
 
 p = subparser.add_parser("remove", help="remove minecraft")
