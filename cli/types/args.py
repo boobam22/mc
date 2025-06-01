@@ -2,6 +2,9 @@ from dataclasses import dataclass
 from pathlib import Path
 import typing as t
 
+if t.TYPE_CHECKING:
+    from types.path import Paths
+
 
 @dataclass
 class BaseArgsDeprecated:
@@ -14,3 +17,11 @@ class BaseArgsDeprecated:
     VERSION_MANIFEST: Path
 
     callback: t.Callable[["BaseArgsDeprecated"], None]
+
+
+@dataclass
+class BaseArgs:
+    root_path: str | None
+    version: str | None
+
+    callback: t.Callable[["Paths"], None]
