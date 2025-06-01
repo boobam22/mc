@@ -7,6 +7,7 @@ class Paths:
     root_dir: Path
 
     version_manifest: Path
+    last_version: Path
 
     asset_idx_dir: Path
     asset_obj_dir: Path
@@ -24,6 +25,7 @@ class Paths:
         object.__setattr__(self, "root_dir", root_dir)
 
         object.__setattr__(self, "version_manifest", root_dir / "version-manifest.json")
+        object.__setattr__(self, "last_version", root_dir / "LAST_VERSION")
 
         object.__setattr__(self, "asset_idx_dir", root_dir / "assets" / "indexes")
         object.__setattr__(self, "asset_obj_dir", root_dir / "assets" / "objects")

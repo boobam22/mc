@@ -119,6 +119,7 @@ def install(args: "BaseArgs", ctx: "Paths"):
     for item in versions["versions"]:
         if item["id"] == version:
             asyncio.run(main(item["url"], ctx.set_version(version)))
+            ctx.last_version.write_text(version)
             break
     else:
         raise
