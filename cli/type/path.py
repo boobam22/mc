@@ -1,9 +1,5 @@
 from dataclasses import dataclass
 from pathlib import Path
-import typing as t
-
-if t.TYPE_CHECKING:
-    from type.json_schema import Versions
 
 
 @dataclass(frozen=True)
@@ -36,14 +32,12 @@ class Paths:
 
         object.__setattr__(self, "versions_dir", root_dir / "versions")
 
-    def set_version(self, version: "Versions.Item"):
+    def set_version(self, version: str):
         return VersionPaths(version, str(self.root_dir))
 
 
 @dataclass(frozen=True)
 class VersionPaths(Paths):
-    version: "Versions.Item"
-
     version_dir: Path
 
     asset_idx: Path
@@ -56,18 +50,14 @@ class VersionPaths(Paths):
     metadata: Path
     fabric_metadata: Path
 
-    def __init__(self, version: "Versions.Item", root: str | None = None):
+    def __init__(self, version: str, root: str | None = None):
         super().__init__(root)
 
-        version_dir = self.versions_dir / version["id"]
-
-        object.__setattr__(self, "version", version)
+        version_dir = self.versions_dir / version
 
         object.__setattr__(self, "version_dir", version_dir)
 
-        object.__setattr__(
-            self, "asset_idx", self.asset_idx_dir / f"{version['id']}.json"
-        )
+        object.__setattr__(self, "asset_idx", self.asset_idx_dir / f"{version}.json")
         object.__setattr__(self, "client", self.version_dir / "client.jar")
 
         object.__setattr__(self, "asset_dir", version_dir / "assets")

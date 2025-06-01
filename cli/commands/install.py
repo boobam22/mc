@@ -88,8 +88,8 @@ def link_asset(meta: "AssetMeta", ctx: "VersionPaths"):
         hardlink(src, dst)
 
 
-async def main(ctx: "VersionPaths"):
-    await download(ctx.version["url"], ctx.metadata)
+async def main(url: str, ctx: "VersionPaths"):
+    await download(url, ctx.metadata)
     meta: "VersionMeta" = json.loads(ctx.metadata.read_text())
 
     asset = meta["assetIndex"]
@@ -118,7 +118,7 @@ def install(args: "BaseArgs", ctx: "Paths"):
 
     for item in versions["versions"]:
         if item["id"] == version:
-            asyncio.run(main(ctx.set_version(item)))
+            asyncio.run(main(item["url"], ctx.set_version(version)))
             break
     else:
         raise
