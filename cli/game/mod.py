@@ -43,7 +43,7 @@ async def download_mods(ctx: "VersionPaths"):
         data: list["ModrinthItem"] = res.json()
 
         for item in data:
-            if version in item["game_versions"]:
+            if "fabric" in item["loaders"] and version in item["game_versions"]:
                 jar = item["files"][0]
                 await download(jar["url"], dst, jar["size"])
                 break
