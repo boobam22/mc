@@ -1,23 +1,18 @@
 import asyncio
 from parser import subparser
-import typing as t
 
 from client import download
-
-if t.TYPE_CHECKING:
-    from type.args import BaseArgs
-    from type.path import Paths
+from context import context as ctx
 
 VERSION_MANIFEST_URL = "https://piston-meta.mojang.com/mc/game/version_manifest.json"
 
 
-def update(args: "BaseArgs", ctx: "Paths"):
-    if ctx.version_manifest.exists():
-        ctx.version_manifest.unlink()
+def update():
+    if ctx.manifest.exists():
+        ctx.manifest.unlink()
+    asyncio.run(download(VERSION_MANIFEST_URL, ctx.manifest))
 
-    asyncio.run(download(VERSION_MANIFEST_URL, ctx.version_manifest))
 
-
-p = subparser.add_parser("update", help="update version manifest")
-p.add_argument("--root-path")
-p.set_defaults(callback=update)
+parser = subparser.add_parser("update", help="update version manifest")
+parser.add_argument("--root-path")
+parser.set_defaults(callback=update)

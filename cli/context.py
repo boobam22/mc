@@ -7,6 +7,10 @@ class Context:
     _root: Path | None
     _version: str | None
 
+    def __init__(self):
+        self._root = None
+        self._version = None
+
     @property
     def root(self):
         if self._root is None:
