@@ -14,7 +14,7 @@ if t.TYPE_CHECKING:
 ASSET_HOST = "https://resources.download.minecraft.net"
 
 
-def install():
+def install(args: t.Any):
     for info in ctx.load_manifest()["versions"]:
         if info["id"] == ctx.version:
             download_sync(info["url"], ctx.metadata)

@@ -5,6 +5,7 @@ from parser import parser
 from context import context as ctx
 import commands.update
 import commands.install
+import commands.list
 
 
 def main():
@@ -15,7 +16,7 @@ def main():
     if getattr(args, "version", None) is not None:
         ctx.version = args.version
 
-    args.callback()
+    args.callback(args)
 
 
 if __name__ == "__main__":

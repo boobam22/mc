@@ -1,28 +1,15 @@
 import fnmatch
-import json
 from parser import subparser
 import typing as t
 
-if t.TYPE_CHECKING:
-    from dataclasses import dataclass
-
-    from type.args import BaseArgs
-    from type.path import Paths
-    from type.json_schema import Versions
-
-    @dataclass
-    class Args(BaseArgs):
-        installed: bool
-        type: t.Literal["release", "snapshot", "old_alpha", "old_beta"] | None
-        parttern: str
+from context import context as ctx
 
 
-def list(args: "Args", ctx: "Paths"):
-    installed = [item.name for item in ctx.versions_dir.glob("*")]
+def list(args: t.Any):
+    installed = [item.name for item in ctx.versions.glob("*")]
+    versions = ctx.load_manifest()["versions"]
 
-    versions: "Versions" = json.loads(ctx.version_manifest.read_text())
-
-    for item in versions["versions"]:
+    for item in versions:
         id = item["id"]
 
         if args.installed and not id in installed:
