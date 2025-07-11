@@ -6,6 +6,7 @@ from context import context as ctx
 import commands.update
 import commands.install
 import commands.list
+import commands.remove
 
 
 def main():

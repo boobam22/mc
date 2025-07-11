@@ -117,6 +117,7 @@ class Context(Paths):
     def version(self):
         if self._version is None:
             self.version = self.load_manifest()["latest"]["release"]
+            assert self._version is not None
         return self._version
 
     @version.setter

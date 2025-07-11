@@ -2,15 +2,14 @@ import shutil
 from parser import subparser
 import typing as t
 
-if t.TYPE_CHECKING:
-    from type.args import BaseArgs
-    from type.path import VersionPaths
+from context import context as ctx
 
 
-def remove(args: "BaseArgs", ctx: "VersionPaths"):
-    assert ctx.version_dir.exists()
-    shutil.rmtree(ctx.version_dir)
-    ctx.asset_idx.unlink()
+def remove(args: t.Any):
+    shutil.rmtree(ctx.game_root.readlink())
+    ctx.game_root.unlink()
+    if (path := next(ctx.versions.glob("*"), None)) is not None:
+        ctx.version = path.name
 
 
 p = subparser.add_parser("remove", help="remove minecraft")
