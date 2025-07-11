@@ -5,7 +5,7 @@ import typing as t
 from client import download_sync
 
 if t.TYPE_CHECKING:
-    from type.json_schema import VersionInfo
+    from json_schema import VersionInfo
 
 
 DEFAULT_ROOT = Path("~/.minecraft").expanduser()

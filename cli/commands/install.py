@@ -10,7 +10,7 @@ from context import context as ctx
 if t.TYPE_CHECKING:
     from pathlib import Path
     from client import URI
-    from type.json_schema import Metadata, AssetInfo
+    from json_schema import Metadata, AssetInfo
 
 ASSET_HOST = "https://resources.download.minecraft.net"
 
