@@ -1,13 +1,11 @@
 from parser import subparser
 import typing as t
 
-if t.TYPE_CHECKING:
-    from type.args import BaseArgs
-    from type.path import Paths
+from context import context as ctx
 
 
-def prune(args: "BaseArgs", ctx: "Paths"):
-    for dir in [ctx.lib_obj_dir, ctx.asset_obj_dir]:
+def prune(args: t.Any):
+    for dir in [ctx.library_obj, ctx.asset_obj]:
         for obj in list(dir.glob("**/*")):
             if obj.is_file() and obj.stat().st_nlink == 1:
                 obj.unlink()
