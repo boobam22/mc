@@ -1,4 +1,5 @@
 import json
+import shutil
 import zipfile
 from parser import subparser
 import typing as t
@@ -64,6 +65,11 @@ def install(args: t.Any):
             jar.extractall(ctx.native)
 
     ctx.main_class.write_text(metadata["mainClass"])
+    for src in ctx.resource.glob("**/*"):
+        if src.is_file():
+            dst = ctx.game_root / src.relative_to(ctx.resource)
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src, dst)
 
 
 p = subparser.add_parser("install", help="install minecraft")

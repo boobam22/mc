@@ -25,6 +25,10 @@ class Paths:
         self._root = Path(root).resolve()
 
     @property
+    def resource(self):
+        return Path(__file__).parent / "resource"
+
+    @property
     def game_root(self):
         return self.root / "game"
 
@@ -79,10 +83,6 @@ class Paths:
     @property
     def asset_obj(self):
         return self.asset / "objects"
-
-    @property
-    def asset_static(self):
-        return self.asset / "static"
 
     @property
     def library(self):
