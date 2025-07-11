@@ -57,7 +57,7 @@ def install(args: t.Any):
 
     for src, dst in links:
         if not src.exists():
-            src.parent.mkdir(parents=True)
+            src.parent.mkdir(parents=True, exist_ok=True)
             src.hardlink_to(dst)
     for obj in natives:
         with zipfile.ZipFile(obj) as jar:
