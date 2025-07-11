@@ -93,7 +93,7 @@ class Context(Paths):
     def __init__(self):
         super().__init__()
         if self.game_root.exists():
-            self._version = self.game_root.readlink().parts[-1]
+            self._version = self.game_root.readlink().name
         else:
             self._version = None
 
