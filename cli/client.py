@@ -23,6 +23,10 @@ client = AsyncClient(
 )
 
 
+def download_sync(url: str, dst: "Path", size: int | None = None):
+    asyncio.run(download(url, dst, size))
+
+
 async def download(url: str, dst: "Path", size: int | None = None):
     if dst.exists():
         return

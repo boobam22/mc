@@ -4,6 +4,7 @@ from parser import parser
 
 from context import context as ctx
 import commands.update
+import commands.install
 
 
 def main():

@@ -3,7 +3,7 @@
 import typing as t
 
 
-class Versions(t.TypedDict):
+class VersionInfo(t.TypedDict):
     class Latest(t.TypedDict):
         release: str
         snapshot: str

@@ -1,39 +1,28 @@
+import json
 from pathlib import Path
+import typing as t
+
+from client import download_sync
+
+if t.TYPE_CHECKING:
+    from type.json_schema import VersionInfo
+
 
 DEFAULT_ROOT = Path("~/.minecraft").expanduser()
+VERSION_MANIFEST_URL = "https://piston-meta.mojang.com/mc/game/version_manifest.json"
 
 
-class Context:
-    _root: Path | None
-    _version: str | None
-
+class Paths:
     def __init__(self):
-        self._root = None
-        self._version = None
+        self._root = DEFAULT_ROOT
 
     @property
     def root(self):
-        if self._root is None:
-            return DEFAULT_ROOT
         return self._root
 
     @root.setter
     def root(self, root: str):
         self._root = Path(root).resolve()
-
-    @property
-    def version(self):
-        if self._version is None:
-            raise
-        return self._version
-
-    @version.setter
-    def version(self, version: str):
-        self._version = version
-
-        if self.game_root.exists():
-            self.game_root.unlink()
-        self.game_root.symlink_to(self.versions / self.version)
 
     @property
     def game_root(self):
@@ -98,6 +87,49 @@ class Context:
     @property
     def library_obj(self):
         return self.library / "objects"
+
+
+class Context(Paths):
+    def __init__(self):
+        super().__init__()
+        if self.game_root.exists():
+            self._version = self.game_root.readlink().parts[-1]
+        else:
+            self._version = None
+
+    def update_manifest(self):
+        if self.manifest.exists():
+            self.manifest.unlink()
+        download_sync(VERSION_MANIFEST_URL, self.manifest)
+
+    def load_manifest(self) -> "VersionInfo":
+        if not self.manifest.exists():
+            self.update_manifest()
+        return json.loads(self.manifest.read_text())
+
+    def is_valid_version(self, version: str):
+        for info in self.load_manifest()["versions"]:
+            if info["id"] == version:
+                return True
+        return False
+
+    @property
+    def version(self):
+        if self._version is None:
+            self.version = self.load_manifest()["latest"]["release"]
+        return self._version
+
+    @version.setter
+    def version(self, version: str):
+        if self.is_valid_version(version):
+            self._version = version
+
+            if self.game_root.exists():
+                self.game_root.unlink()
+
+            real_dir = self.versions / version
+            real_dir.mkdir(parents=True, exist_ok=True)
+            self.game_root.symlink_to(real_dir)
 
 
 context = Context()
