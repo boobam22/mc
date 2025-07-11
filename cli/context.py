@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 import typing as t
 
-from client import download_sync
+from client import download
 
 if t.TYPE_CHECKING:
     from json_schema import VersionInfo
@@ -51,6 +51,10 @@ class Paths:
     @property
     def metadata(self):
         return self.game_root / "metadata.json"
+
+    @property
+    def fabric_metadata(self):
+        return self.game_root / "fabric-metadata.json"
 
     @property
     def client(self):
@@ -104,7 +108,7 @@ class Context(Paths):
     def update_manifest(self):
         if self.manifest.exists():
             self.manifest.unlink()
-        download_sync(VERSION_MANIFEST_URL, self.manifest)
+        download(VERSION_MANIFEST_URL, self.manifest)
 
     def load_manifest(self) -> "VersionInfo":
         if not self.manifest.exists():

@@ -4,7 +4,7 @@ import zipfile
 from parser import subparser
 import typing as t
 
-from client import download_sync, download_all_sync
+from client import download, download_all
 from context import context as ctx
 
 if t.TYPE_CHECKING:
@@ -18,7 +18,7 @@ ASSET_HOST = "https://resources.download.minecraft.net"
 def install(args: t.Any):
     for info in ctx.load_manifest()["versions"]:
         if info["id"] == ctx.version:
-            download_sync(info["url"], ctx.metadata)
+            download(info["url"], ctx.metadata)
             break
 
     metadata: "Metadata" = json.loads(ctx.metadata.read_text())
@@ -45,7 +45,7 @@ def install(args: t.Any):
 
     asset_index = metadata["assetIndex"]
     dst = ctx.asset_idx / f"{ctx.version}.json"
-    download_sync(asset_index["url"], dst, asset_index["size"])
+    download(asset_index["url"], dst, asset_index["size"])
     asset_info: "AssetInfo" = json.loads(dst.read_text())
     for path, item in asset_info["objects"].items():
         hash = item["hash"]
@@ -54,7 +54,7 @@ def install(args: t.Any):
         items.append((url, dst, item["size"]))
         links.append((ctx.game_asset / path, dst))
 
-    download_all_sync(items)
+    download_all(items)
 
     for src, dst in links:
         if not src.exists():
