@@ -6,6 +6,7 @@ import typing as t
 
 from client import download, download_all
 from context import context as ctx
+from fabric import install_fabric
 
 if t.TYPE_CHECKING:
     from pathlib import Path
@@ -65,6 +66,8 @@ def install(args: t.Any):
             jar.extractall(ctx.native)
 
     ctx.main_class.write_text(metadata["mainClass"])
+    install_fabric()
+
     for src in ctx.resource.glob("**/*"):
         if src.is_file():
             dst = ctx.game_root / src.relative_to(ctx.resource)

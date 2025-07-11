@@ -65,7 +65,7 @@ class AssetInfo(t.TypedDict):
     objects: dict[str, Asset]
 
 
-class FabricMeta(t.TypedDict):
+class FabricInfo(t.TypedDict):
     class Maven(t.TypedDict):
         maven: str
         version: str
