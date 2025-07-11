@@ -22,9 +22,11 @@ client = AsyncClient(
     http2=True,
 )
 
+loop = asyncio.get_event_loop()
+
 
 def download_sync(url: str, dst: "Path", size: int | None = None):
-    asyncio.run(download(url, dst, size))
+    loop.run_until_complete(download(url, dst, size))
 
 
 async def download(url: str, dst: "Path", size: int | None = None):
@@ -42,6 +44,10 @@ async def download(url: str, dst: "Path", size: int | None = None):
 
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.move(tmp.name, dst)
+
+
+def download_all_sync(items: t.Iterable["URI"]):
+    loop.run_until_complete(download_all(items))
 
 
 async def download_all(items: t.Iterable["URI"]):

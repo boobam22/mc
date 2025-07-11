@@ -20,7 +20,7 @@ class VersionInfo(t.TypedDict):
     versions: list[Item]
 
 
-class VersionMeta(t.TypedDict):
+class Metadata(t.TypedDict):
     class AssetIndex(t.TypedDict):
         id: str
         sha1: str
@@ -57,7 +57,7 @@ class VersionMeta(t.TypedDict):
     mainClass: str
 
 
-class AssetMeta(t.TypedDict):
+class AssetInfo(t.TypedDict):
     class Asset(t.TypedDict):
         hash: str
         size: int
