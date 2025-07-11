@@ -1,47 +1,26 @@
-import json
 import subprocess
 from parser import subparser
 import typing as t
 
-if t.TYPE_CHECKING:
-    from type.args import BaseArgs
-    from type.path import Paths
+from context import context as ctx
 
 
-def start(args: "BaseArgs", ctx: "Paths"):
-    if (version := args.version) is None:
-        version = ctx.last_version.read_text().strip()
-
-    ctx.last_version.write_text(version)
-    ctx = ctx.set_version(version)
-
-    cwd = ctx.version_dir
-
-    libs = [str(item.relative_to(cwd)) for item in ctx.lib_dir.glob("**/*.jar")]
-
-    if ctx.fabric_metadata.exists():
-        metadata = ctx.fabric_metadata
-    else:
-        metadata = ctx.metadata
-
-    main_class: str = json.loads(metadata.read_text())["mainClass"]
+def start(args: t.Any):
+    cwd = ctx.game_root
+    libs = [str(item.relative_to(cwd)) for item in ctx.game_library.glob("**/*.jar")]
 
     subprocess.Popen(
         [
             "java",
             "-Xmx4G",
-            f"-Djava.library.path={ctx.native_dir.relative_to(cwd)}",
+            f"-Djava.library.path={ctx.native.relative_to(cwd)}",
             "-cp",
             f"{':'.join(libs)}:{ctx.client.relative_to(cwd)}",
-            main_class,
+            ctx.main_class.read_text().strip(),
             "--version",
-            version,
-            "--gameDir",
-            ".",
+            ctx.version,
             "--assetsDir",
-            str(ctx.asset_idx_dir.parent),
-            "--assetIndex",
-            version,
+            str(ctx.game_asset),
             "--username",
             "nia11720",
             "--uuid",

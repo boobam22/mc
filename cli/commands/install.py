@@ -63,6 +63,8 @@ def install(args: t.Any):
         with zipfile.ZipFile(obj) as jar:
             jar.extractall(ctx.native)
 
+    ctx.main_class.write_text(metadata["mainClass"])
+
 
 p = subparser.add_parser("install", help="install minecraft")
 p.add_argument("--root-path")

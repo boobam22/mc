@@ -57,6 +57,10 @@ class Paths:
         return self.game_root / "server.jar"
 
     @property
+    def main_class(self):
+        return self.game_root / "MAIN_CLASS"
+
+    @property
     def versions(self):
         return self.root / "versions"
 

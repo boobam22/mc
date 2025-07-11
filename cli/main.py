@@ -8,6 +8,7 @@ import commands.install
 import commands.list
 import commands.remove
 import commands.prune
+import commands.start
 
 
 def main():
