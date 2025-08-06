@@ -9,6 +9,7 @@ if t.TYPE_CHECKING:
 MODRINTH = "https://api.modrinth.com"
 
 mods = [
+    "fabric-api",
     "malilib",
     "minihud",
     "litematica",
