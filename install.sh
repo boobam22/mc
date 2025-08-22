@@ -1,7 +1,7 @@
 #!/bin/sh
 
 VENV="$HOME/.venv"
-HTTPX="$VENV/httpx"
+HTTPX="$VENV/mc-httpx"
 
 if [ ! -d "$HTTPX" ]; then
     mkdir -p $VENV
@@ -12,4 +12,4 @@ if [ ! -d "$HTTPX" ]; then
 fi
 
 mkdir -p ~/.local/bin
-python3 -m zipapp cli -p $HTTPX/bin/python -o ~/.local/bin/mc
+python3 -m zipapp src -p $HTTPX/bin/python -o ~/.local/bin/mc
