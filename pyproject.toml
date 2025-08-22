@@ -1,0 +1,11 @@
+[project]
+name = "mc"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "nia", email = "mangrove0720@outlook.com"},
+]
+dependencies = ["httpx==0.28.1", "h2==4.2.0"]
+requires-python = "==3.12.*"
+readme = "README.md"
+license = {text = "MIT"}
