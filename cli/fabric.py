@@ -3,7 +3,6 @@ import typing as t
 
 from client import client, download, download_all
 from context import context as ctx
-from mod import install_mods
 
 if t.TYPE_CHECKING:
     from client import URI
@@ -47,4 +46,3 @@ def install_fabric():
                 shutil.rmtree(item)
 
     ctx.main_class.write_text(data["launcherMeta"]["mainClass"]["client"])
-    install_mods()
