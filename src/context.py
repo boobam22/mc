@@ -26,7 +26,7 @@ class Paths:
 
     @property
     def resource(self):
-        return Path(__file__).parent / "resource"
+        return self.root / "resource"
 
     @property
     def game_root(self):

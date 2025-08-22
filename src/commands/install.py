@@ -1,4 +1,5 @@
 import json
+import shutil
 import zipfile
 from parser import subparser
 import typing as t
@@ -66,6 +67,19 @@ def install(args: t.Any):
 
     ctx.main_class.write_text(metadata["mainClass"])
     install_fabric()
+
+    for src in ctx.resource.glob("**/*"):
+        if src.is_file():
+            relative = src.relative_to(ctx.resource)
+            if relative.parts[0] == "mods":
+                if len(relative.parts) == 3 and relative.parts[1] == ctx.version:
+                    relative = ctx.mod / relative.parts[2]
+                else:
+                    continue
+
+            dst = ctx.game_root / relative
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src, dst)
 
 
 p = subparser.add_parser("install", help="install minecraft")
