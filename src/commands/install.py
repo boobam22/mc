@@ -55,7 +55,9 @@ def install(args: t.Any):
         items.append((url, dst, item["size"]))
         links.append((ctx.game_asset / path, dst))
 
+    print("Downloading game assets...")
     download_all(items)
+    print("Done.")
 
     for src, dst in links:
         if not src.exists():
